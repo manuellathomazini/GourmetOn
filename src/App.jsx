@@ -1,11 +1,11 @@
 import React from 'react'
-import Header from './compopnents/Header'
-import Hero from './compopnents/Hero'
-import Presentation from './compopnents/Presentation'
-import Funcionalidades from './compopnents/Funcionalidades'
-import Depoimentos from './compopnents/Depoimentos'
-import Contact from './compopnents/Contact'
-import Footer from './compopnents/Footer'
+import Header from './components/Header'
+import Hero from './components/Hero'
+import Presentation from './components/Presentation'
+import Funcionalidades from './components/Funcionalidades'
+import Depoimentos from './components/Depoimentos'
+import Contact from './components/Contact'
+import Footer from './components/Footer'
 
 const App = () => {
   return (
