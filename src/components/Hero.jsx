@@ -5,11 +5,11 @@ import acai from '../assets/pratos/acai.webp'
 
 function Hero() {
   return (
-    <section id="hero" className="relative min-h-[88vh] flex items-center justify-center overflow-hidden bg-escuro text-creme">
+    <section id="hero" className="relative min-h-[88vh] flex items-center justify-center overflow-hidden">
       <div
         className="absolute inset-0 opacity-70 bg-gradient-to-br from-orange-200 to-purple-300"
       />
-      <div className="absolute inset-0 bg-escuro/40" />
+      <div className="absolute inset-0" />
 
       <div className="absolute inset-0 pointer-events-none hidden md:block">
         <div className="absolute top-32 left-16 w-24 h-24 rounded-3xl bg-gradient-to-br from-[#E63946] to-[#FF8C61] flex items-center justify-center text-4xl rotate-12 opacity-90">
@@ -35,11 +35,11 @@ function Hero() {
           Fome agora?<br />A gente resolve.
         </h1>
 
-        <p className="text-lg text-creme/70 mb-10 max-w-lg mx-auto">
+        <p className="text-lg mb-10 max-w-lg mx-auto">
           2.000 restaurantes, do japonês ao açaí. Digite seu endereço e veja o que chega rápido até você.
         </p>
 
-        <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 mt-10 text-xs font-semibold text-creme/50">
+        <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 mt-10 text-xs font-semibold">
           <span>★ 4.9 na App Store</span>
           <span>+180 mil downloads</span>
           <span>Frete grátis no 1º pedido</span>
