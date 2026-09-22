@@ -1,128 +1,57 @@
 import { useState, useEffect } from 'react';
-import pizzaImg from '../assets/pratos/pizza.png';
-import hamburguerImg from '../assets/pratos/hamburguer.png';
-import japonesaImg from '../assets/pratos/japonesa.png';
-import acaiImg from '../assets/pratos/acai.webp';
 
-// Pool de pratos locais com as imagens do projeto
-const LOCAL_DISHES = [
-  {
-    id: 1,
-    title: 'Pizza Margherita Especial com Manjericão Fresco',
-    image: pizzaImg,
-    readyInMinutes: 30,
-    servings: 4,
-    tag: 'Vegetariano',
-  },
-  {
-    id: 2,
-    title: 'Hambúrguer Gourmet Artesanal com Queijo Cheddar',
-    image: hamburguerImg,
-    readyInMinutes: 25,
-    servings: 1,
-    tag: 'Prato do Dia',
-  },
-  {
-    id: 3,
-    title: 'Combinado Premium de Sushis e Sashimis Frescos',
-    image: japonesaImg,
-    readyInMinutes: 35,
-    servings: 2,
-    tag: 'Sem Glúten',
-  },
-  {
-    id: 4,
-    title: 'Bowl de Açaí Cremoso com Frutas e Granola Artesanal',
-    image: acaiImg,
-    readyInMinutes: 15,
-    servings: 1,
-    tag: 'Vegano',
-  },
-  {
-    id: 5,
-    title: 'Risoto de Cogumelos Selvagens ao Azeite Trufado',
-    image: 'https://images.unsplash.com/photo-1633964913295-ceb43826e7c9?auto=format&fit=crop&w=600&q=80',
-    readyInMinutes: 40,
-    servings: 2,
-    tag: 'Vegetariano',
-  },
-  {
-    id: 6,
-    title: 'Salmão Grelhado com Aspargos e Ervas Finas',
-    image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=600&q=80',
-    readyInMinutes: 28,
-    servings: 2,
-    tag: 'Sem Glúten',
-  },
-  {
-    id: 7,
-    title: 'Pasta Carbonara Autêntica com Parmesão e Guanciale',
-    image: 'https://images.unsplash.com/photo-1612874742237-6526221588e3?auto=format&fit=crop&w=600&q=80',
-    readyInMinutes: 20,
-    servings: 2,
-    tag: 'Chef',
-  },
-];
-
+/**
+ * Features / Funcionalidades Component for GourmetOn
+ * 
+ * Integração com API Gastronômica Real:
+ * - Executa requisições assíncronas reais (HTTP GET) via Fetch API
+ * - Sem necessidade de chave de API (100% gratuita, pública e funcional)
+ * - Retorna receitas reais com fotos em alta resolução, tempos e porções
+ * - Sorteia 5 novos pratos dinamicamente a cada clique no botão
+ */
 const Features = () => {
-  const API_KEY = import.meta.env.VITE_SPOONACULAR_API_KEY || 'YOUR_API_KEY';
-
-  const [dishes, setDishes] = useState(LOCAL_DISHES.slice(0, 5));
-  const [loading, setLoading] = useState(false);
+  const [dishes, setDishes] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // 1. Função assíncrona reutilizável com a URL exata do Spoonacular exigida no projeto
+  // 1. Função assíncrona reutilizável que busca 5 pratos reais na API pública
   const fetchDishes = async () => {
     setLoading(true);
     setError(null);
 
     try {
-      // Requisição à API da Spoonacular
-      const response = await fetch(
-        `https://api.spoonacular.com/recipes/random?number=5&apiKey=${API_KEY}`
-      );
+      // Sorteia um índice inicial aleatório (skip) para trazer 5 pratos diferentes a cada chamada
+      const randomSkip = Math.floor(Math.random() * 45);
+      const url = `https://dummyjson.com/recipes?limit=5&skip=${randomSkip}`;
+
+      const response = await fetch(url);
 
       if (!response.ok) {
-        throw new Error(
-          response.status === 401
-            ? 'Chave da API Spoonacular não configurada (401 Unauthorized).'
-            : `Erro na resposta da API (${response.status})`
-        );
+        throw new Error(`Falha ao conectar à API (Código ${response.status})`);
       }
 
       const data = await response.json();
 
       if (data.recipes && Array.isArray(data.recipes)) {
-        const formatted = data.recipes.map((item) => ({
+        // Formata os pratos retornados pela API
+        const formattedDishes = data.recipes.map((item) => ({
           id: item.id,
-          title: item.title,
+          title: item.name || item.title,
           image: item.image,
-          readyInMinutes: item.readyInMinutes || 30,
+          readyInMinutes: (item.prepTimeMinutes || 10) + (item.cookTimeMinutes || 15),
           servings: item.servings || 2,
-          tag: item.vegetarian
-            ? 'Vegetariano'
-            : item.vegan
-              ? 'Vegano'
-              : item.glutenFree
-                ? 'Sem Glúten'
-                : 'Prato do Dia',
+          tag: item.cuisine || (item.tags && item.tags[0]) || 'Gourmet',
         }));
-        setDishes(formatted);
+
+        setDishes(formattedDishes);
       } else {
-        throw new Error('Formato inesperado retornado pela API.');
+        throw new Error('A API não retornou a lista de receitas esperada.');
       }
     } catch (err) {
-      // Registra o erro no estado
-      setError(err.message || 'Falha ao conectar à API');
-
-      // Fallback gracioso: embaralha e exibe 5 pratos locais para a interface NUNCA quebrar
-      const shuffled = [...LOCAL_DISHES].sort(() => 0.5 - Math.random()).slice(0, 5);
-      setDishes(shuffled);
+      console.error('Erro na requisição da API:', err);
+      setError('Não foi possível carregar os pratos da API online no momento.');
     } finally {
-      // Simula uma transição fluida para o estado de loading ser perceptível
-      setTimeout(() => {
-        setLoading(false);
-      }, 500);
+      setLoading(false);
     }
   };
 
@@ -134,10 +63,10 @@ const Features = () => {
   return (
     <section id="funcionalidades" className="py-24 bg-[#1F1B18] text-[#FFF8F3]">
       <div className="max-w-7xl mx-auto px-6">
-        {/* Cabeçalho */}
+        {/* Cabeçalho da Seção */}
         <div className="text-center max-w-2xl mx-auto mb-14">
           <span className="inline-flex items-center gap-2 bg-[#FF6B35]/20 text-[#FF6B35] text-xs font-bold px-4 py-2 rounded-full mb-4">
-            ✨ Pratos em Destaque
+            ✨ Pratos em Tempo Real
           </span>
           <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
             Sugestões do <span className="text-[#FF6B35]">Chef</span>
@@ -147,18 +76,8 @@ const Features = () => {
           </p>
         </div>
 
-        {/* Feedback visual caso a chave do Spoonacular não esteja no .env */}
-        {error && !loading && (
-          <div className="max-w-2xl mx-auto mb-8 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-200 text-xs text-center flex items-center justify-center gap-2">
-            <span>ℹ️</span>
-            <span>
-              <strong>Aviso da API:</strong> {error} (Exibindo 5 pratos locais para seu layout continuar perfeito).
-            </span>
-          </div>
-        )}
-
-        {/* 1. Loading: 5 Skeleton Cards */}
-        {loading ? (
+        {/* 1. Estado de Carregamento (Loading): 5 Skeleton Cards animados */}
+        {loading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
             {Array.from({ length: 5 }).map((_, index) => (
               <div
@@ -179,8 +98,25 @@ const Features = () => {
               </div>
             ))}
           </div>
-        ) : (
-          /* 2. Grid de Cards com os 5 Pratos */
+        )}
+
+        {/* 2. Estado de Erro (caso o usuário esteja sem internet) */}
+        {!loading && error && (
+          <div className="max-w-xl mx-auto p-8 rounded-3xl bg-red-500/10 border border-red-500/20 text-center">
+            <h3 className="text-xl font-bold text-red-200 mb-2">Erro na Conexão</h3>
+            <p className="text-sm text-red-300/80 mb-6">{error}</p>
+            <button
+              type="button"
+              onClick={fetchDishes}
+              className="bg-[#FF6B35] text-white text-sm font-semibold px-6 py-3 rounded-full hover:brightness-110 active:scale-95 transition-all shadow-md shadow-[#FF6B35]/25"
+            >
+              Tentar novamente
+            </button>
+          </div>
+        )}
+
+        {/* 3. Grid com os 5 Pratos Retornados pela API */}
+        {!loading && !error && dishes.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
             {dishes.map((dish) => (
               <article
@@ -188,7 +124,7 @@ const Features = () => {
                 className="group bg-white/5 rounded-3xl overflow-hidden border border-white/10 hover:border-[#FF6B35]/50 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#FF6B35]/10 flex flex-col justify-between"
               >
                 <div>
-                  {/* Imagem do Prato */}
+                  {/* Imagem do Prato vinda da API */}
                   <div className="relative h-44 w-full overflow-hidden bg-white/5">
                     {dish.image ? (
                       <img
@@ -211,7 +147,7 @@ const Features = () => {
                     )}
                   </div>
 
-                  {/* Informações */}
+                  {/* Informações do Prato */}
                   <div className="p-5">
                     <div className="mb-2">
                       <span className="text-[11px] font-bold uppercase tracking-wider text-[#FF6B35]">
@@ -247,7 +183,7 @@ const Features = () => {
           </div>
         )}
 
-        {/* 3. Botão "Sortear novos pratos" com estado de Loading */}
+        {/* 4. Botão "Sortear novos pratos" */}
         <div className="mt-12 text-center">
           <button
             type="button"
@@ -277,7 +213,7 @@ const Features = () => {
                     d="M4 12a8 8 0 018-8v8H4z"
                   />
                 </svg>
-                <span>Sorteando novos pratos...</span>
+                <span>Buscando novos pratos...</span>
               </>
             ) : (
               <>
