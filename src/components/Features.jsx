@@ -4,15 +4,15 @@ import hamburguerImg from '../assets/pratos/hamburguer.png';
 import japonesaImg from '../assets/pratos/japonesa.png';
 import acaiImg from '../assets/pratos/acai.webp';
 
-// Banco de pratos para demonstração (garante que mesmo sem chave da API o layout funcione e sorteie pratos diferentes)
-const DEMO_POOL = [
+// Pool de pratos locais com as imagens do projeto
+const LOCAL_DISHES = [
   {
     id: 1,
     title: 'Pizza Margherita Especial com Manjericão Fresco',
     image: pizzaImg,
     readyInMinutes: 30,
     servings: 4,
-    vegetarian: true,
+    tag: 'Vegetariano',
   },
   {
     id: 2,
@@ -20,7 +20,7 @@ const DEMO_POOL = [
     image: hamburguerImg,
     readyInMinutes: 25,
     servings: 1,
-    vegetarian: false,
+    tag: 'Prato do Dia',
   },
   {
     id: 3,
@@ -28,7 +28,7 @@ const DEMO_POOL = [
     image: japonesaImg,
     readyInMinutes: 35,
     servings: 2,
-    glutenFree: true,
+    tag: 'Sem Glúten',
   },
   {
     id: 4,
@@ -36,7 +36,7 @@ const DEMO_POOL = [
     image: acaiImg,
     readyInMinutes: 15,
     servings: 1,
-    vegan: true,
+    tag: 'Vegano',
   },
   {
     id: 5,
@@ -44,7 +44,7 @@ const DEMO_POOL = [
     image: 'https://images.unsplash.com/photo-1633964913295-ceb43826e7c9?auto=format&fit=crop&w=600&q=80',
     readyInMinutes: 40,
     servings: 2,
-    vegetarian: true,
+    tag: 'Vegetariano',
   },
   {
     id: 6,
@@ -52,7 +52,7 @@ const DEMO_POOL = [
     image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=600&q=80',
     readyInMinutes: 28,
     servings: 2,
-    glutenFree: true,
+    tag: 'Sem Glúten',
   },
   {
     id: 7,
@@ -60,89 +60,73 @@ const DEMO_POOL = [
     image: 'https://images.unsplash.com/photo-1612874742237-6526221588e3?auto=format&fit=crop&w=600&q=80',
     readyInMinutes: 20,
     servings: 2,
-    vegetarian: false,
-  },
-  {
-    id: 8,
-    title: 'Tacos Crocantes com Guacamole e Pico de Gallo',
-    image: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=600&q=80',
-    readyInMinutes: 22,
-    servings: 3,
-    glutenFree: true,
+    tag: 'Chef',
   },
 ];
 
-/**
- * Features / Funcionalidades Component for GourmetOn
- * 
- * - Função assíncrona reutilizável `fetchDishes` para busca de 5 pratos aleatórios
- * - Execução no carregamento inicial (`useEffect`)
- * - Botão "Sortear novos pratos" abaixo dos cards que dispara nova requisição
- * - Exibição de indicador de carregamento (skeletons e spinner) durante a busca
- * - Fallback inteligente de demonstração caso a chave da Spoonacular não esteja definida
- */
 const Features = () => {
   const API_KEY = import.meta.env.VITE_SPOONACULAR_API_KEY || 'YOUR_API_KEY';
 
-  const [dishes, setDishes] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [dishes, setDishes] = useState(LOCAL_DISHES.slice(0, 5));
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [isDemoMode, setIsDemoMode] = useState(false);
 
-  // Função assíncrona reutilizável para buscar pratos da API ou sortear novos pratos
+  // 1. Função assíncrona reutilizável com a URL exata do Spoonacular exigida no projeto
   const fetchDishes = async () => {
-    // Ativa o estado de carregamento imediatamente ao iniciar a busca/sorteio
     setLoading(true);
     setError(null);
 
-    // Modo demonstração se a chave for o placeholder ou não existir
-    if (!API_KEY || API_KEY === 'YOUR_API_KEY') {
-      setTimeout(() => {
-        // Embaralha o pool e seleciona 5 pratos aleatórios
-        const shuffled = [...DEMO_POOL].sort(() => 0.5 - Math.random()).slice(0, 5);
-        setDishes(shuffled);
-        setIsDemoMode(true);
-        setLoading(false);
-      }, 600);
-      return;
-    }
-
     try {
+      // Requisição à API da Spoonacular
       const response = await fetch(
         `https://api.spoonacular.com/recipes/random?number=5&apiKey=${API_KEY}`
       );
 
       if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error('Chave de API inválida ou não configurada (401).');
-        } else if (response.status === 402) {
-          throw new Error('Limite gratuito de requisições da Spoonacular atingido (402).');
-        } else {
-          throw new Error(`Falha na requisição (${response.status}: ${response.statusText})`);
-        }
+        throw new Error(
+          response.status === 401
+            ? 'Chave da API Spoonacular não configurada (401 Unauthorized).'
+            : `Erro na resposta da API (${response.status})`
+        );
       }
 
       const data = await response.json();
 
       if (data.recipes && Array.isArray(data.recipes)) {
-        setDishes(data.recipes);
-        setIsDemoMode(false);
+        const formatted = data.recipes.map((item) => ({
+          id: item.id,
+          title: item.title,
+          image: item.image,
+          readyInMinutes: item.readyInMinutes || 30,
+          servings: item.servings || 2,
+          tag: item.vegetarian
+            ? 'Vegetariano'
+            : item.vegan
+              ? 'Vegano'
+              : item.glutenFree
+                ? 'Sem Glúten'
+                : 'Prato do Dia',
+        }));
+        setDishes(formatted);
       } else {
         throw new Error('Formato inesperado retornado pela API.');
       }
     } catch (err) {
-      console.warn('Spoonacular fetch error:', err.message);
-      setError(err.message);
-      // Em caso de erro na API externa, exibe 5 pratos do cardápio demonstrativo
-      const shuffled = [...DEMO_POOL].sort(() => 0.5 - Math.random()).slice(0, 5);
+      // Registra o erro no estado
+      setError(err.message || 'Falha ao conectar à API');
+
+      // Fallback gracioso: embaralha e exibe 5 pratos locais para a interface NUNCA quebrar
+      const shuffled = [...LOCAL_DISHES].sort(() => 0.5 - Math.random()).slice(0, 5);
       setDishes(shuffled);
-      setIsDemoMode(true);
     } finally {
-      setLoading(false);
+      // Simula uma transição fluida para o estado de loading ser perceptível
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
     }
   };
 
-  // Dispara a busca inicial na montagem do componente
+  // 2. Executa a requisição na montagem inicial do componente
   useEffect(() => {
     fetchDishes();
   }, []);
@@ -150,7 +134,7 @@ const Features = () => {
   return (
     <section id="funcionalidades" className="py-24 bg-[#1F1B18] text-[#FFF8F3]">
       <div className="max-w-7xl mx-auto px-6">
-        {/* Cabeçalho da Seção */}
+        {/* Cabeçalho */}
         <div className="text-center max-w-2xl mx-auto mb-14">
           <span className="inline-flex items-center gap-2 bg-[#FF6B35]/20 text-[#FF6B35] text-xs font-bold px-4 py-2 rounded-full mb-4">
             ✨ Pratos em Destaque
@@ -163,15 +147,18 @@ const Features = () => {
           </p>
         </div>
 
-        {/* Aviso de Modo Demonstração (caso nenhuma chave Spoonacular esteja no .env) */}
-        {isDemoMode && !loading && (
-          <div className="max-w-2xl mx-auto mb-8 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-200 text-xs text-center">
-            💡 <strong>Modo Demonstração:</strong> Exibindo 5 pratos selecionados aleatoriamente do cardápio local. (Configure <code>VITE_SPOONACULAR_API_KEY</code> no seu arquivo <code>.env</code> para conectar à API externa).
+        {/* Feedback visual caso a chave do Spoonacular não esteja no .env */}
+        {error && !loading && (
+          <div className="max-w-2xl mx-auto mb-8 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-200 text-xs text-center flex items-center justify-center gap-2">
+            <span>ℹ️</span>
+            <span>
+              <strong>Aviso da API:</strong> {error} (Exibindo 5 pratos locais para seu layout continuar perfeito).
+            </span>
           </div>
         )}
 
-        {/* 1. Estado de Carregamento: 5 Skeleton Cards */}
-        {loading && (
+        {/* 1. Loading: 5 Skeleton Cards */}
+        {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
             {Array.from({ length: 5 }).map((_, index) => (
               <div
@@ -192,10 +179,8 @@ const Features = () => {
               </div>
             ))}
           </div>
-        )}
-
-        {/* 2. Grid de Cards com os 5 Pratos Recebidos */}
-        {!loading && dishes.length > 0 && (
+        ) : (
+          /* 2. Grid de Cards com os 5 Pratos */
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
             {dishes.map((dish) => (
               <article
@@ -218,7 +203,7 @@ const Features = () => {
                       </div>
                     )}
 
-                    {/* Badge de Tempo de Preparo */}
+                    {/* Tag de Tempo */}
                     {dish.readyInMinutes && (
                       <span className="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-[#FFF8F3] text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1">
                         ⏱️ {dish.readyInMinutes} min
@@ -226,17 +211,11 @@ const Features = () => {
                     )}
                   </div>
 
-                  {/* Informações do Prato */}
+                  {/* Informações */}
                   <div className="p-5">
                     <div className="mb-2">
                       <span className="text-[11px] font-bold uppercase tracking-wider text-[#FF6B35]">
-                        {dish.vegetarian
-                          ? 'Vegetariano'
-                          : dish.vegan
-                            ? 'Vegano'
-                            : dish.glutenFree
-                              ? 'Sem Glúten'
-                              : 'Prato do Dia'}
+                        {dish.tag}
                       </span>
                     </div>
 
@@ -253,7 +232,7 @@ const Features = () => {
                 <div className="px-5 pb-5 pt-0">
                   <div className="pt-3 border-t border-white/10 flex items-center justify-between">
                     <span className="text-xs text-[#FFF8F3]/50">
-                      {dish.servings ? `${dish.servings} porções` : '1 porção'}
+                      {dish.servings} {dish.servings > 1 ? 'porções' : 'porção'}
                     </span>
                     <a
                       href="#contato"
@@ -268,7 +247,7 @@ const Features = () => {
           </div>
         )}
 
-        {/* 3. Botão "Sortear novos pratos" com estado de Loading e Tailwind CSS */}
+        {/* 3. Botão "Sortear novos pratos" com estado de Loading */}
         <div className="mt-12 text-center">
           <button
             type="button"
