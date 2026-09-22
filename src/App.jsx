@@ -1,7 +1,7 @@
 import Header from './components/Header'
 import Hero from './components/Hero'
 import Presentation from './components/Presentation'
-import Funcionalidades from './components/Funcionalidades'
+import Features from './components/Features'
 import Depoimentos from './components/Depoimentos'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
@@ -9,13 +9,13 @@ import Footer from './components/Footer'
 const App = () => {
   return (
     <div>
-      <Header/>
-      <Hero/>
-      <Presentation/>
-      <Funcionalidades/>
-      <Depoimentos/>
-      <Contact/>
-      <Footer/>
+      <Header />
+      <Hero />
+      <Presentation />
+      <Features />
+      <Depoimentos />
+      <Contact />
+      <Footer />
     </div>
   )
 }

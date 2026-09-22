@@ -32,6 +32,7 @@ const Header = () => {
   const navLinks = [
     { name: 'Início', href: '#hero' },
     { name: 'Sobre', href: '#apresentacao' },
+    { name: 'Destaques', href: '#funcionalidades' },
     { name: 'Depoimentos', href: '#depoimentos' },
     { name: 'Contato', href: '#contato' },
   ];
@@ -53,8 +54,8 @@ const Header = () => {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out ${isScrolled
-          ? 'bg-white/85 backdrop-blur-md shadow-sm border-b border-black/5 py-3'
-          : 'bg-transparent py-5'
+        ? 'bg-white/85 backdrop-blur-md shadow-sm border-b border-black/5 py-3'
+        : 'bg-transparent py-5'
         }`}
     >
       <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">

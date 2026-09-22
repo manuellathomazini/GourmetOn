@@ -1,9 +1,1 @@
-const Funcionalidades = () => {
-  return (
-    <div>
-      
-    </div>
-  )
-}
-
-export default Funcionalidades
+export { default } from './Features';
