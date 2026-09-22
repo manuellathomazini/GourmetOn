@@ -43,14 +43,14 @@ function Contact() {
                 />
                 <button
                   type="submit"
-                  className="bg-[#FF6B35] text-white font-semibold px-8 py-4 rounded-full hover:brightness-110 transition text-sm whitespace-nowrap"
+                  className="bg-[#FF6B35] text-white font-semibold hover:cursor-pointer px-8 py-4 rounded-full hover:brightness-110 transition text-sm whitespace-nowrap"
                 >
                   Quero meu cupom
                 </button>
               </form>
             )}
           </div>
-          <p className='pt-8 text-[#FFF8F3]/30 text-sm'>Você também pode entrar em contato enviando mensagem para:<br/>contato@gourmeton.com.br</p>
+          <p className='pt-8 text-[#FFF8F3]/30 text-sm'>Você também pode entrar em contato enviando mensagem para:<br />contato@gourmeton.com.br</p>
         </div>
       </div>
     </section>

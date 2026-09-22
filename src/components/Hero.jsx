@@ -5,6 +5,10 @@ import acai from '../assets/pratos/acai.webp'
 import GetAppIcon from '@mui/icons-material/GetApp';
 import StarIcon from '@mui/icons-material/Star';
 
+const abrirLink = () => {
+  window.open("https://play.google.com/store/apps", "_blank");
+};
+
 function Hero() {
   return (
     <section id="hero" className="relative min-h-[88vh] flex items-center justify-center overflow-hidden">
@@ -15,16 +19,16 @@ function Hero() {
 
       <div className="absolute inset-0 pointer-events-none hidden md:block">
         <div className="absolute top-32 left-16 w-24 h-24 rounded-3xl bg-gradient-to-br from-[#E63946] to-[#FF8C61] flex items-center justify-center text-4xl rotate-12 opacity-90">
-          <img src={pizza} alt="Pizza" className="w-full h-full object-cover"/>
+          <img src={pizza} alt="Pizza" className="w-full h-full object-cover" />
         </div>
         <div className="absolute bottom-32 left-32 w-20 h-20 rounded-3xl bg-gradient-to-br from-[#2A9D8F] to-[#8AC926] flex items-center justify-center text-3xl -rotate-6 opacity-90">
-          <img src={japonesa} alt="Comida Japonesa" className="w-full h-full object-cover"/>
+          <img src={japonesa} alt="Comida Japonesa" className="w-full h-full object-cover" />
         </div>
         <div className="absolute top-40 right-20 w-24 h-24 rounded-3xl bg-gradient-to-br from-[#F4A261] to-[#FFD166] flex items-center justify-center text-4xl -rotate-12 opacity-90">
-          <img src={hamburguer} alt="Burguer" className="w-full h-full object-cover"/>
+          <img src={hamburguer} alt="Burguer" className="w-full h-full object-cover" />
         </div>
         <div className="absolute bottom-28 right-36 w-20 h-20 rounded-3xl bg-gradient-to-br from-[#6D597A] to-[#B56576] flex items-center justify-center text-3xl rotate-6 opacity-90">
-          <img src={acai} alt="Açaí" className="w-full h-full object-cover"/>
+          <img src={acai} alt="Açaí" className="w-full h-full object-cover" />
         </div>
       </div>
 
@@ -41,10 +45,10 @@ function Hero() {
           2.000 restaurantes, do japonês ao açaí. Digite seu endereço e veja o que chega rápido até você.
         </p>
 
-        <button className='border border border-white/10 rounded-[2.5rem] p-3 shadow-2xl bg-amber-900/30 hover:cursor-pointer hover:bg-amber-900/60 transition'>Baixar agora <GetAppIcon/></button>
+        <button className='border border border-white/10 rounded-[2.5rem] p-3 shadow-2xl bg-amber-900/30 hover:cursor-pointer hover:bg-amber-900/60 transition' onClick={abrirLink}>Baixar agora <GetAppIcon /></button>
 
         <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 mt-10 text-xs font-semibold">
-          <span className='flex items-center'><StarIcon fontSize=''/> 4.9 na App Store</span>
+          <span className='flex items-center'><StarIcon fontSize='' /> 4.9 na App Store</span>
           <span>+180 mil downloads</span>
           <span>Frete grátis no 1º pedido</span>
         </div>

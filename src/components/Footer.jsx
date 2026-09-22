@@ -237,7 +237,7 @@ const Footer = () => {
         {/* Rodapé Inferior: Copyright e Botão Voltar ao Topo */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-500">
           <p>
-            &copy; {new Date().getFullYear()} GourmetOn. Feito com amor por quem ama comer bem no Brasil.
+            &copy; {new Date().getFullYear()} GourmetOn — Projeto acadêmico FIAP.<br />Manuella Thomazini | Henrique Gumbys | Murillo Dourado | Renan Carlos Bonanno
           </p>
 
           <button

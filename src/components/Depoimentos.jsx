@@ -1,3 +1,5 @@
+import StarIcon from '@mui/icons-material/Star';
+
 function Depoimentos() {
   const depoimentos = [
     {
@@ -39,7 +41,7 @@ function Depoimentos() {
         <div className="grid md:grid-cols-3 gap-6">
           {depoimentos.map((d) => (
             <div key={d.nome} className="p-8 rounded-3xl bg-white border border-[#1F1B18]/5 shadow-sm">
-              <div className="text-[#FF6B35] text-sm mb-4">★★★★★</div>
+              <div className="text-[#FF6B35] mb-4"><StarIcon /><StarIcon /><StarIcon /><StarIcon /><StarIcon /></div>
               <p className="text-[#1F1B18]/70 leading-relaxed mb-6">"{d.texto}"</p>
               <div className="flex items-center gap-3">
                 <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${d.cor} flex items-center justify-center font-bold text-white`}>

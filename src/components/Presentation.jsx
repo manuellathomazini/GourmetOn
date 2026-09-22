@@ -49,7 +49,7 @@ const Presentation = () => {
           <div className="hidden md:flex justify-center">
             <div className="w-64 h-[28rem] bg-white/5 border border-white/10 rounded-[2.5rem] p-3 shadow-2xl">
               <div className="w-full h-full rounded-[2rem] p-5 flex flex-col gap-4">
-                <img src={print} alt="Print do App"/>
+                <img src={print} alt="Print do App" />
               </div>
             </div>
           </div>
