@@ -2,6 +2,8 @@ import pizza from '../assets/pratos/pizza.png'
 import japonesa from '../assets/pratos/japonesa.png'
 import hamburguer from '../assets/pratos/hamburguer.png'
 import acai from '../assets/pratos/acai.webp'
+import GetAppIcon from '@mui/icons-material/GetApp';
+import StarIcon from '@mui/icons-material/Star';
 
 function Hero() {
   return (
@@ -39,8 +41,10 @@ function Hero() {
           2.000 restaurantes, do japonês ao açaí. Digite seu endereço e veja o que chega rápido até você.
         </p>
 
+        <button className='border border border-white/10 rounded-[2.5rem] p-3 shadow-2xl bg-amber-900/30 hover:cursor-pointer hover:bg-amber-900/60 transition'>Baixar agora <GetAppIcon/></button>
+
         <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 mt-10 text-xs font-semibold">
-          <span>★ 4.9 na App Store</span>
+          <span className='flex items-center'><StarIcon fontSize=''/> 4.9 na App Store</span>
           <span>+180 mil downloads</span>
           <span>Frete grátis no 1º pedido</span>
         </div>

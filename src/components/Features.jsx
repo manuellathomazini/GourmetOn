@@ -66,13 +66,13 @@ const Features = () => {
         {/* Cabeçalho da Seção */}
         <div className="text-center max-w-2xl mx-auto mb-14">
           <span className="inline-flex items-center gap-2 bg-[#FF6B35]/20 text-[#FF6B35] text-xs font-bold px-4 py-2 rounded-full mb-4">
-            ✨ Pratos em Tempo Real
+            Pratos em Tempo Real
           </span>
           <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
             Sugestões do <span className="text-[#FF6B35]">Chef</span>
           </h2>
           <p className="text-[#FFF8F3]/60 text-base leading-relaxed">
-            Descubra receitas e pratos selecionados aleatoriamente em tempo real diretamente da nossa API gastronômica.
+            Descubra as mais diversas comidas presentes em nosso aplicativo, onde você poderá filtrar pelos seus tipos de pratos <span className='text-[#FF6B35] font-extrabold'>favoritos</span>.
           </p>
         </div>
 

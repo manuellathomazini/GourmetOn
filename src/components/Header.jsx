@@ -85,8 +85,8 @@ const Header = () => {
         {/* Call to Action Button */}
         <div className="hidden md:flex items-center">
           <a
-            href="#contato"
-            onClick={(e) => handleNavClick(e, '#contato')}
+            href="#hero"
+            onClick={(e) => handleNavClick(e, '#hero')}
             className="bg-[#FF6B35] text-white text-sm font-bold px-5 py-2.5 rounded-full shadow-md shadow-[#FF6B35]/20 hover:brightness-110 active:scale-95 transition-all"
           >
             Pedir Agora

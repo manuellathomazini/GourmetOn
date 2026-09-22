@@ -53,7 +53,7 @@ const Footer = () => {
               <div className="flex items-center gap-3">
                 {/* Instagram */}
                 <a
-                  href="https://www.instagram.com/manu_thomazini_?stkn=MWpndWp2eHNsdGt0cw=="
+                  href="https://www.instagram.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Instagram GourmetOn"
@@ -128,18 +128,13 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="#funcionalidades" className="hover:text-orange-400 transition-colors">
-                  Filtros & Busca
-                </a>
-              </li>
-              <li>
                 <a href="#depoimentos" className="hover:text-orange-400 transition-colors">
-                  Quem Já Pediu
+                  Avaliações
                 </a>
               </li>
               <li>
                 <a href="#contato" className="hover:text-orange-400 transition-colors">
-                  Novidades & Cupons
+                  Fique por dentro
                 </a>
               </li>
             </ul>
@@ -164,23 +159,11 @@ const Footer = () => {
                 </div>
               </li>
               <li className="flex items-start gap-3">
-                <Phone className="w-4 h-4 text-orange-500 mt-1 flex-shrink-0" />
-                <div>
-                  <span className="block text-xs text-neutral-500">Concierge & WhatsApp VIP</span>
-                  <a
-                    href="tel:+55 11 93778-6713"
-                    className="hover:text-orange-400 transition-colors text-neutral-300"
-                  >
-                    +55 (11) 93778-6713
-                  </a>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-orange-500 mt-1 flex-shrink-0" />
                 <div>
                   <span className="block text-xs text-neutral-500">Sede Administrativa</span>
                   <span className="text-neutral-300">
-                    Av. Paulista, 1100 - São Paulo, SP
+                    Av. Paulista - São Paulo, SP
                   </span>
                 </div>
               </li>
@@ -189,7 +172,7 @@ const Footer = () => {
                 <div>
                   <span className="block text-xs text-neutral-500">Horário do Delivery</span>
                   <span className="text-neutral-300">
-                    Todos os dias, das 11h às 23h30
+                    Todos os dias, das 09h às 23h30
                   </span>
                 </div>
               </li>
