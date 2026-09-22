@@ -24,7 +24,7 @@ function Depoimentos() {
   ];
 
   return (
-    <section id="depoimentos" className="py-24">
+    <section id="depoimentos" className="py-24 bg-gradient-to-br from-yellow-200 to-pink-200">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
           <span className="inline-block bg-[#FF6B35]/10 text-[#FF6B35] text-xs font-bold px-4 py-2 rounded-full mb-5">
