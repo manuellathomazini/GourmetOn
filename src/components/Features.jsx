@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
  * - Executa requisições assíncronas reais (HTTP GET) via Fetch API
  * - Sem necessidade de chave de API (100% gratuita, pública e funcional)
  * - Retorna receitas reais com fotos em alta resolução, tempos e porções
- * - Sorteia 5 novos pratos dinamicamente a cada clique no botão
+ * - Sorteia 4 novos pratos dinamicamente a cada clique no botão
  */
 const Features = () => {
   const [dishes, setDishes] = useState([]);
@@ -21,7 +21,7 @@ const Features = () => {
 
     try {
       const randomSkip = Math.floor(Math.random() * 45);
-      const url = `https://dummyjson.com/recipes?limit=5&skip=${randomSkip}`;
+      const url = `https://dummyjson.com/recipes?limit=4&skip=${randomSkip}`;
 
       const response = await fetch(url);
 
@@ -81,7 +81,7 @@ const Features = () => {
         {/* Estado de Carregamento */}
         {loading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-            {Array.from({ length: 5 }).map((_, index) => (
+            {Array.from({ length: 4 }).map((_, index) => (
               <div
                 key={index}
                 className="bg-white/5 rounded-3xl overflow-hidden border border-white/10 animate-pulse flex flex-col"
@@ -282,7 +282,7 @@ const Features = () => {
                     d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                   />
                 </svg>
-                <span>Sortear novos pratos</span>
+                <span>Ver outras opções</span>
               </>
             )}
           </button>
