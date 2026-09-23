@@ -13,14 +13,13 @@ const Features = () => {
   const [dishes, setDishes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [expandedId, setExpandedId] = useState(null); // Controla qual card está expandido
 
-  // 1. Função assíncrona reutilizável que busca 5 pratos reais na API pública
   const fetchDishes = async () => {
     setLoading(true);
     setError(null);
 
     try {
-      // Sorteia um índice inicial aleatório (skip) para trazer 5 pratos diferentes a cada chamada
       const randomSkip = Math.floor(Math.random() * 45);
       const url = `https://dummyjson.com/recipes?limit=5&skip=${randomSkip}`;
 
@@ -33,7 +32,6 @@ const Features = () => {
       const data = await response.json();
 
       if (data.recipes && Array.isArray(data.recipes)) {
-        // Formata os pratos retornados pela API
         const formattedDishes = data.recipes.map((item) => ({
           id: item.id,
           title: item.name || item.title,
@@ -41,9 +39,14 @@ const Features = () => {
           readyInMinutes: (item.prepTimeMinutes || 10) + (item.cookTimeMinutes || 15),
           servings: item.servings || 2,
           tag: item.cuisine || (item.tags && item.tags[0]) || 'Gourmet',
+          ingredients: item.ingredients || [],
+          instructions: item.instructions || [],
+          difficulty: item.difficulty || 'Médio',
+          rating: item.rating || 0,
         }));
 
         setDishes(formattedDishes);
+        setExpandedId(null); // Limpa expansão anterior
       } else {
         throw new Error('A API não retornou a lista de receitas esperada.');
       }
@@ -55,7 +58,6 @@ const Features = () => {
     }
   };
 
-  // 2. Executa a requisição na montagem inicial do componente
   useEffect(() => {
     fetchDishes();
   }, []);
@@ -76,7 +78,7 @@ const Features = () => {
           </p>
         </div>
 
-        {/* 1. Estado de Carregamento (Loading): 5 Skeleton Cards animados */}
+        {/* Estado de Carregamento */}
         {loading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
             {Array.from({ length: 5 }).map((_, index) => (
@@ -100,7 +102,7 @@ const Features = () => {
           </div>
         )}
 
-        {/* 2. Estado de Erro (caso o usuário esteja sem internet) */}
+        {/* Estado de Erro */}
         {!loading && error && (
           <div className="max-w-xl mx-auto p-8 rounded-3xl bg-red-500/10 border border-red-500/20 text-center">
             <h3 className="text-xl font-bold text-red-200 mb-2">Erro na Conexão</h3>
@@ -115,22 +117,24 @@ const Features = () => {
           </div>
         )}
 
-        {/* 3. Grid com os 5 Pratos Retornados pela API */}
+        {/* Grid com os Pratos */}
         {!loading && !error && dishes.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {dishes.map((dish) => (
               <article
                 key={dish.id}
-                className="group bg-white/5 rounded-3xl overflow-hidden border border-white/10 hover:border-[#FF6B35]/50 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#FF6B35]/10 flex flex-col justify-between"
+                className={`bg-white/5 rounded-3xl overflow-hidden border border-white/10 hover:border-[#FF6B35]/50 transition-all duration-300 flex flex-col ${expandedId === dish.id ? 'lg:col-span-2' : ''
+                  }`}
               >
-                <div>
-                  {/* Imagem do Prato vinda da API */}
-                  <div className="relative h-44 w-full overflow-hidden bg-white/5">
+                {/* Card Normal */}
+                <div className="flex flex-col md:flex-row">
+                  {/* Imagem */}
+                  <div className="relative w-full md:w-64 h-44 md:h-auto flex-shrink-0 overflow-hidden bg-white/5">
                     {dish.image ? (
                       <img
                         src={dish.image}
                         alt={dish.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                         loading="lazy"
                       />
                     ) : (
@@ -139,7 +143,6 @@ const Features = () => {
                       </div>
                     )}
 
-                    {/* Tag de Tempo */}
                     {dish.readyInMinutes && (
                       <span className="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-[#FFF8F3] text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1">
                         ⏱️ {dish.readyInMinutes} min
@@ -147,43 +150,92 @@ const Features = () => {
                     )}
                   </div>
 
-                  {/* Informações do Prato */}
-                  <div className="p-5">
-                    <div className="mb-2">
+                  {/* Informações Básicas */}
+                  <div className="flex-1 p-5 flex flex-col justify-between">
+                    <div>
                       <span className="text-[11px] font-bold uppercase tracking-wider text-[#FF6B35]">
                         {dish.tag}
                       </span>
+                      <h3 className="font-bold text-xl leading-snug text-[#FFF8F3] mt-2 mb-3">
+                        {dish.title}
+                      </h3>
+
+                      {/* Rating e Dificuldade */}
+                      <div className="flex items-center gap-4 text-sm text-[#FFF8F3]/70 mb-4">
+                        {dish.rating > 0 && (
+                          <span>⭐ {dish.rating.toFixed(1)}</span>
+                        )}
+                        <span>Dificuldade: {dish.difficulty}</span>
+                      </div>
                     </div>
 
-                    <h3
-                      className="font-bold text-base leading-snug line-clamp-2 text-[#FFF8F3] group-hover:text-[#FF6B35] transition-colors"
-                      title={dish.title}
-                    >
-                      {dish.title}
-                    </h3>
+                    {/* Rodapé */}
+                    <div className="pt-3 border-t border-white/10 flex items-center justify-between">
+                      <span className="text-xs text-[#FFF8F3]/50">
+                        {dish.servings} {dish.servings > 1 ? 'porções' : 'porção'}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setExpandedId(expandedId === dish.id ? null : dish.id)}
+                        className="text-xs font-bold text-[#FF6B35] hover:text-white transition-colors"
+                      >
+                        {expandedId === dish.id ? 'Esconder' : 'Ver receita'} →
+                      </button>
+                    </div>
                   </div>
                 </div>
 
-                {/* Rodapé do Card */}
-                <div className="px-5 pb-5 pt-0">
-                  <div className="pt-3 border-t border-white/10 flex items-center justify-between">
-                    <span className="text-xs text-[#FFF8F3]/50">
-                      {dish.servings} {dish.servings > 1 ? 'porções' : 'porção'}
-                    </span>
-                    <a
-                      href="#contato"
-                      className="text-xs font-bold text-[#FF6B35] hover:text-white transition-colors"
-                    >
-                      Pedir agora →
-                    </a>
+                {/* Expansão com Ingredientes e Modo de Preparo */}
+                {expandedId === dish.id && (
+                  <div className="border-t border-white/10 p-6 space-y-6 bg-white/2">
+                    {/* Ingredientes */}
+                    <div>
+                      <h4 className="font-bold text-lg text-[#FF6B35] mb-4">Ingredientes</h4>
+                      <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {dish.ingredients && dish.ingredients.length > 0 ? (
+                          dish.ingredients.map((ingredient, index) => (
+                            <li key={index} className="flex items-start gap-2 text-[#FFF8F3]/80">
+                              <span className="text-[#FF6B35] mt-1">•</span>
+                              <span>{ingredient}</span>
+                            </li>
+                          ))
+                        ) : (
+                          <p className="text-[#FFF8F3]/60">Sem ingredientes listados</p>
+                        )}
+                      </ul>
+                    </div>
+
+                    {/* Modo de Preparo */}
+                    <div>
+                      <h4 className="font-bold text-lg text-[#FF6B35] mb-4">Modo de Preparo</h4>
+                      <ol className="space-y-3">
+                        {dish.instructions && dish.instructions.length > 0 ? (
+                          dish.instructions.map((instruction, index) => (
+                            <li key={index} className="flex gap-3 text-[#FFF8F3]/80">
+                              <span className="font-bold text-[#FF6B35] flex-shrink-0">
+                                {index + 1}.
+                              </span>
+                              <span>{instruction}</span>
+                            </li>
+                          ))
+                        ) : (
+                          <p className="text-[#FFF8F3]/60">Sem instruções listadas</p>
+                        )}
+                      </ol>
+                    </div>
+
+                    {/* Botão de Ação */}
+                    <button className="w-full bg-[#FF6B35] hover:bg-[#E8542A] text-white font-bold py-3 rounded-full transition-colors mt-4">
+                      Pedir agora
+                    </button>
                   </div>
-                </div>
+                )}
               </article>
             ))}
           </div>
         )}
 
-        {/* 4. Botão "Sortear novos pratos" */}
+        {/* Botão Sortear */}
         <div className="mt-12 text-center">
           <button
             type="button"
