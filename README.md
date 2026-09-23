@@ -40,4 +40,4 @@ Desenvolvido por
 - **Henrique Gumbys Pagliato** - RM 570914
 
 ## Link do repositório
-https://github.com/manuellathomazini/Dev-Tarefas.git
+https://github.com/manuellathomazini/GourmetOn.git
