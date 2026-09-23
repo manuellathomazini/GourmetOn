@@ -225,9 +225,11 @@ const Features = () => {
                     </div>
 
                     {/* Botão de Ação */}
-                    <button className="w-full bg-[#FF6B35] hover:bg-[#E8542A] text-white font-bold py-3 rounded-full transition-colors mt-4">
-                      Pedir agora
-                    </button>
+                    <div className="flex w-full bg-[#FF6B35] hover:bg-[#E8542A] text-white font-bold py-3 rounded-full transition-colors mt-4 hover:cursor-pointer justify-center">
+                      <a href='#hero'>
+                        Pedir agora
+                      </a>
+                    </div>
                   </div>
                 )}
               </article>
